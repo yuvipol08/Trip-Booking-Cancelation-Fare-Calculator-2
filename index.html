@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - Trip Booking & Fare Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#booking">Book Trip</a></li>
+          <li><a href="#summary">Summary</a></li>
+          <li><a href="#cancel">Cancel</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Welcome / Intro Section ===== -->
+  <section id="home" class="welcome">
+    <div class="container">
+      <h1>Plan Your Journey with TravelEase</h1>
+      <p>
+        Book bus and train trips across India in just a few clicks. Enter your
+        travel details, get an instant fare estimate, and manage your bookings
+        easily. Need to change your plans? Cancel anytime and get a quick refund.
+      </p>
+      <a href="#booking" class="btn">Book Your Trip</a>
+    </div>
+  </section>
+
+  <!-- ===== Trip Booking Form ===== -->
+  <section id="booking" class="section">
+    <div class="container">
+      <h2 class="section-title">Trip Booking</h2>
+      <div class="card">
+        <form id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="e.g. Rahul Sharma" />
+            </div>
+            <div class="form-group">
+              <label for="passengers">Number of Passengers</label>
+              <input type="number" id="passengers" min="1" max="10" placeholder="e.g. 2" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="source">Source City</label>
+              <select id="source">
+                <option value="">-- Select Source --</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Jaipur">Jaipur</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="destination">Destination City</label>
+              <select id="destination">
+                <option value="">-- Select Destination --</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Jaipur">Jaipur</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date">Travel Date</label>
+              <input type="date" id="date" />
+            </div>
+            <div class="form-group">
+              <label for="travelClass">Travel Class</label>
+              <select id="travelClass">
+                <option value="">-- Select Class --</option>
+                <option value="economy">Economy</option>
+                <option value="business">Business</option>
+                <option value="luxury">Luxury</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live fare estimate -->
+          <div class="fare-box">
+            <span>Estimated Fare:</span>
+            <strong id="fareEstimate">₹0</strong>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn" id="calcBtn">Calculate Fare</button>
+            <button type="submit" class="btn btn-primary">Book Now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Booking Summary ===== -->
+  <section id="summary" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Booking Summary</h2>
+      <div class="card summary-card" id="summaryCard">
+        <p class="empty-note" id="emptyNote">
+          No booking yet. Fill the form above and click "Book Now" to see your
+          trip details here.
+        </p>
+
+        <div id="summaryDetails" class="hidden">
+          <div class="summary-row"><span>Booking ID</span><b id="sBookingId"></b></div>
+          <div class="summary-row"><span>Passenger Name</span><b id="sName"></b></div>
+          <div class="summary-row"><span>Route</span><b id="sRoute"></b></div>
+          <div class="summary-row"><span>Travel Date</span><b id="sDate"></b></div>
+          <div class="summary-row"><span>Passengers</span><b id="sPassengers"></b></div>
+          <div class="summary-row"><span>Class</span><b id="sClass"></b></div>
+          <div class="summary-row total"><span>Total Fare</span><b id="sFare"></b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Trip Cancellation ===== -->
+  <section id="cancel" class="section">
+    <div class="container">
+      <h2 class="section-title">Cancel a Trip</h2>
+      <div class="card cancel-card">
+        <p>Enter your Booking ID to cancel your trip and process a refund.</p>
+        <div class="form-group">
+          <label for="cancelId">Booking ID</label>
+          <input type="text" id="cancelId" placeholder="e.g. TE10234" />
+        </div>
+        <button type="button" class="btn btn-danger" id="cancelBtn">Cancel Booking</button>
+        <p class="refund-msg hidden" id="refundMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

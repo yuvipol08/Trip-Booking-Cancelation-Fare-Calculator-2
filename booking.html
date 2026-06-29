@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - Book a Trip</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="booking.html" class="active">Book Trip</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="cancel.html">Cancel</a></li>
+          <li id="authArea"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Booking Form ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Book Your Trip</h2>
+      <p class="section-subtitle">Choose your mode of travel and fill in the details below.</p>
+
+      <div class="card">
+        <form id="bookingForm">
+          <!-- Travel mode selector: Flight / Train / Bus -->
+          <div class="mode-selector">
+            <div class="mode-option">
+              <input type="radio" name="mode" id="modeFlight" value="flight" checked />
+              <label for="modeFlight"><span class="mode-icon">✈️</span>Flight</label>
+            </div>
+            <div class="mode-option">
+              <input type="radio" name="mode" id="modeTrain" value="train" />
+              <label for="modeTrain"><span class="mode-icon">🚆</span>Train</label>
+            </div>
+            <div class="mode-option">
+              <input type="radio" name="mode" id="modeBus" value="bus" />
+              <label for="modeBus"><span class="mode-icon">🚌</span>Bus</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="source">Source City</label>
+              <select id="source">
+                <option value="">-- Select Source --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="destination">Destination City</label>
+              <select id="destination">
+                <option value="">-- Select Destination --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date">Travel Date</label>
+              <input type="date" id="date" />
+            </div>
+            <div class="form-group">
+              <label for="travelClass">Travel Class</label>
+              <select id="travelClass">
+                <option value="">-- Select Class --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="passengers">Number of Passengers</label>
+              <input type="number" id="passengers" min="1" max="10" placeholder="e.g. 2" />
+            </div>
+          </div>
+
+          <!-- Live fare estimate -->
+          <div class="fare-box">
+            <span>Estimated Fare:</span>
+            <strong id="fareEstimate">Rs 0</strong>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn" id="calcBtn">Calculate Fare</button>
+            <button type="submit" class="btn btn-primary">Book Now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="booking.js"></script>
+</body>
+</html>

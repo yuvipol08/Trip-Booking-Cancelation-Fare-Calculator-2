@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - My Bookings</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="booking.html">Book Trip</a></li>
+          <li><a href="bookings.html" class="active">My Bookings</a></li>
+          <li><a href="cancel.html">Cancel</a></li>
+          <li id="authArea"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Booking Summary List ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">My Bookings</h2>
+      <p class="section-subtitle">All your trips booked with TravelEase.</p>
+
+      <p class="empty-note hidden" id="emptyNote">
+        You have no bookings yet. Head over to "Book Trip" to plan your first journey!
+      </p>
+
+      <div id="bookingList"></div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="bookings.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TravelEase - Trip Booking & Fare Calculator</title>
+  <title>TravelEase - Home</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,138 +14,49 @@
       <div class="logo">Travel<span>Ease</span></div>
       <nav>
         <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#booking">Book Trip</a></li>
-          <li><a href="#summary">Summary</a></li>
-          <li><a href="#cancel">Cancel</a></li>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="booking.html">Book Trip</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="cancel.html">Cancel</a></li>
+          <li id="authArea"></li>
         </ul>
       </nav>
     </div>
   </header>
 
   <!-- ===== Welcome / Intro Section ===== -->
-  <section id="home" class="welcome">
+  <section class="welcome">
     <div class="container">
-      <h1>Plan Your Journey with TravelEase</h1>
+      <h1>Book Flights, Trains & Buses with TravelEase</h1>
       <p>
-        Book bus and train trips across India in just a few clicks. Enter your
-        travel details, get an instant fare estimate, and manage your bookings
-        easily. Need to change your plans? Cancel anytime and get a quick refund.
+        Travel across 30+ Indian cities in just a few clicks. Pick your mode of
+        transport, get an instant fare estimate, and manage all your bookings in
+        one place. Plans changed? Cancel anytime and get a quick refund.
       </p>
-      <a href="#booking" class="btn">Book Your Trip</a>
+      <a href="booking.html" class="btn">Book Your Trip</a>
     </div>
   </section>
 
-  <!-- ===== Trip Booking Form ===== -->
-  <section id="booking" class="section">
+  <!-- ===== Feature Cards ===== -->
+  <section class="section">
     <div class="container">
-      <h2 class="section-title">Trip Booking</h2>
-      <div class="card">
-        <form id="bookingForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" placeholder="e.g. Rahul Sharma" />
-            </div>
-            <div class="form-group">
-              <label for="passengers">Number of Passengers</label>
-              <input type="number" id="passengers" min="1" max="10" placeholder="e.g. 2" />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="source">Source City</label>
-              <select id="source">
-                <option value="">-- Select Source --</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Bangalore">Bangalore</option>
-                <option value="Kolkata">Kolkata</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Jaipur">Jaipur</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="destination">Destination City</label>
-              <select id="destination">
-                <option value="">-- Select Destination --</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Bangalore">Bangalore</option>
-                <option value="Kolkata">Kolkata</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Jaipur">Jaipur</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="date">Travel Date</label>
-              <input type="date" id="date" />
-            </div>
-            <div class="form-group">
-              <label for="travelClass">Travel Class</label>
-              <select id="travelClass">
-                <option value="">-- Select Class --</option>
-                <option value="economy">Economy</option>
-                <option value="business">Business</option>
-                <option value="luxury">Luxury</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Live fare estimate -->
-          <div class="fare-box">
-            <span>Estimated Fare:</span>
-            <strong id="fareEstimate">₹0</strong>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn" id="calcBtn">Calculate Fare</button>
-            <button type="submit" class="btn btn-primary">Book Now</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Booking Summary ===== -->
-  <section id="summary" class="section section-alt">
-    <div class="container">
-      <h2 class="section-title">Booking Summary</h2>
-      <div class="card summary-card" id="summaryCard">
-        <p class="empty-note" id="emptyNote">
-          No booking yet. Fill the form above and click "Book Now" to see your
-          trip details here.
-        </p>
-
-        <div id="summaryDetails" class="hidden">
-          <div class="summary-row"><span>Booking ID</span><b id="sBookingId"></b></div>
-          <div class="summary-row"><span>Passenger Name</span><b id="sName"></b></div>
-          <div class="summary-row"><span>Route</span><b id="sRoute"></b></div>
-          <div class="summary-row"><span>Travel Date</span><b id="sDate"></b></div>
-          <div class="summary-row"><span>Passengers</span><b id="sPassengers"></b></div>
-          <div class="summary-row"><span>Class</span><b id="sClass"></b></div>
-          <div class="summary-row total"><span>Total Fare</span><b id="sFare"></b></div>
+      <h2 class="section-title">Why Travel With Us</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="icon">✈️</div>
+          <h3>Three Ways to Travel</h3>
+          <p>Choose from Flight, Train or Bus and compare fares for each mode.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Trip Cancellation ===== -->
-  <section id="cancel" class="section">
-    <div class="container">
-      <h2 class="section-title">Cancel a Trip</h2>
-      <div class="card cancel-card">
-        <p>Enter your Booking ID to cancel your trip and process a refund.</p>
-        <div class="form-group">
-          <label for="cancelId">Booking ID</label>
-          <input type="text" id="cancelId" placeholder="e.g. TE10234" />
+        <div class="feature">
+          <div class="icon">💸</div>
+          <h3>Instant Fare Estimate</h3>
+          <p>See your total fare update live based on route, class and passengers.</p>
         </div>
-        <button type="button" class="btn btn-danger" id="cancelBtn">Cancel Booking</button>
-        <p class="refund-msg hidden" id="refundMsg"></p>
+        <div class="feature">
+          <div class="icon">🎫</div>
+          <h3>Easy Management</h3>
+          <p>View all your bookings and cancel trips with quick refunds anytime.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -157,6 +68,6 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

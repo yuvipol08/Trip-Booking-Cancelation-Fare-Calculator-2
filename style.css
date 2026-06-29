@@ -42,6 +42,8 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .logo {
@@ -56,7 +58,8 @@ a {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 22px;
+  align-items: center;
+  gap: 20px;
 }
 
 .nav-links a {
@@ -66,9 +69,36 @@ a {
   border-bottom: 2px solid transparent;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
   color: #ffd166;
   border-bottom: 2px solid #ffd166;
+}
+
+.nav-user {
+  font-size: 15px;
+  color: #ffd166;
+  font-weight: 600;
+}
+
+.nav-logout {
+  background-color: #ffd166;
+  color: #1f3b3d;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: background-color 0.25s;
+}
+
+.nav-logout:hover {
+  background-color: #ffc233;
+  border-bottom: 2px solid transparent;
+}
+
+#authArea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 /* ===== Welcome Section ===== */
@@ -85,9 +115,42 @@ a {
 }
 
 .welcome p {
-  max-width: 620px;
+  max-width: 640px;
   margin: 0 auto 26px;
   font-size: 17px;
+}
+
+/* ===== Feature cards on home page ===== */
+.features {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feature {
+  flex: 1;
+  min-width: 240px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 26px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature .icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.feature h3 {
+  color: #1f6f78;
+  margin-bottom: 8px;
 }
 
 /* ===== Buttons ===== */
@@ -128,6 +191,11 @@ a {
   background-color: #d75a3c;
 }
 
+.btn-block {
+  width: 100%;
+  text-align: center;
+}
+
 .btn-group {
   display: flex;
   gap: 14px;
@@ -150,12 +218,24 @@ a {
   margin-bottom: 30px;
 }
 
+.section-subtitle {
+  text-align: center;
+  color: #666;
+  margin-top: -18px;
+  margin-bottom: 30px;
+}
+
 /* ===== Cards ===== */
 .card {
   background-color: #fff;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.card-narrow {
+  max-width: 440px;
+  margin: 0 auto;
 }
 
 /* ===== Forms ===== */
@@ -195,6 +275,50 @@ a {
   box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15);
 }
 
+/* ===== Transport mode selector ===== */
+.mode-selector {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.mode-option {
+  flex: 1;
+  min-width: 130px;
+}
+
+.mode-option input {
+  display: none;
+}
+
+.mode-option label {
+  display: block;
+  text-align: center;
+  padding: 16px;
+  border: 2px solid #cdd6d8;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s;
+}
+
+.mode-option label .mode-icon {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.mode-option label:hover {
+  border-color: #2a9d8f;
+}
+
+.mode-option input:checked + label {
+  border-color: #2a9d8f;
+  background-color: #e7f6ef;
+  color: #1f6f78;
+}
+
 /* ===== Fare Box ===== */
 .fare-box {
   display: flex;
@@ -213,13 +337,88 @@ a {
   font-size: 22px;
 }
 
-/* ===== Booking Summary ===== */
-.empty-note {
-  text-align: center;
-  color: #777;
-  font-style: italic;
+/* ===== Auth tabs (login/register) ===== */
+.auth-tabs {
+  display: flex;
+  margin-bottom: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #cdd6d8;
 }
 
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: #f1f5f6;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.auth-tab.active {
+  background-color: #2a9d8f;
+  color: #fff;
+}
+
+/* ===== Booking list (My Bookings) ===== */
+.booking-item {
+  border: 1px solid #e2e8e9;
+  border-left: 5px solid #2a9d8f;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 16px;
+  background-color: #fff;
+}
+
+.booking-item.cancelled {
+  border-left-color: #e76f51;
+  opacity: 0.75;
+}
+
+.booking-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.booking-head h3 {
+  color: #1f6f78;
+  font-size: 18px;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background-color: #e7f6ef;
+  color: #1f6f5b;
+  text-transform: uppercase;
+}
+
+.badge.cancelled {
+  background-color: #fbe4dd;
+  color: #b23a1f;
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px 18px;
+  font-size: 14px;
+}
+
+.booking-grid div span {
+  color: #777;
+  display: block;
+  font-size: 12px;
+}
+
+/* ===== Summary rows ===== */
 .summary-row {
   display: flex;
   justify-content: space-between;
@@ -257,6 +456,18 @@ a {
   font-weight: 600;
 }
 
+.refund-msg.error {
+  background-color: #fbe4dd;
+  border-left-color: #e76f51;
+  color: #b23a1f;
+}
+
+.empty-note {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}
+
 /* ===== Footer ===== */
 .footer {
   background-color: #1f3b3d;
@@ -267,14 +478,16 @@ a {
 }
 
 /* ===== Responsive Design ===== */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .nav-bar {
     flex-direction: column;
-    gap: 12px;
+    text-align: center;
   }
 
   .nav-links {
-    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
   }
 
   .welcome h1 {

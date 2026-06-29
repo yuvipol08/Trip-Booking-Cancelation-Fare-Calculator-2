@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - Cancel Trip</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="booking.html">Book Trip</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="cancel.html" class="active">Cancel</a></li>
+          <li id="authArea"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Cancellation ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Cancel a Trip</h2>
+      <p class="section-subtitle">Enter your Booking ID to cancel and get a refund.</p>
+
+      <div class="card card-narrow cancel-card">
+        <p>You can find your Booking ID under the "My Bookings" page.</p>
+        <div class="form-group">
+          <label for="cancelId">Booking ID</label>
+          <input type="text" id="cancelId" placeholder="e.g. TE10234" />
+        </div>
+        <button type="button" class="btn btn-danger btn-block" id="cancelBtn">Cancel Booking</button>
+        <p class="refund-msg hidden" id="refundMsg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="cancel.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - Login / Register</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="booking.html">Book Trip</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="cancel.html">Cancel</a></li>
+          <li id="authArea"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Login / Register ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Welcome to TravelEase</h2>
+      <p class="section-subtitle">Login to your account or create a new one to start booking.</p>
+
+      <div class="card card-narrow">
+        <!-- Tabs to switch between login and register -->
+        <div class="auth-tabs">
+          <div class="auth-tab active" id="loginTab">Login</div>
+          <div class="auth-tab" id="registerTab">Register</div>
+        </div>
+
+        <!-- Login form -->
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Your password" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <!-- Register form (hidden by default) -->
+        <form id="registerForm" class="hidden">
+          <div class="form-group">
+            <label for="regName">Full Name</label>
+            <input type="text" id="regName" placeholder="e.g. Rahul Sharma" />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="At least 6 characters" />
+          </div>
+          <div class="form-group">
+            <label for="regConfirm">Confirm Password</label>
+            <input type="password" id="regConfirm" placeholder="Re-enter password" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

@@ -5,17 +5,26 @@
 
 requireLogin();
 
+/* ----- Parse a "YYYY-MM-DD" string as a LOCAL date -----
+   new Date("YYYY-MM-DD") is treated as UTC midnight, which can roll back
+   to the previous day in negative-offset timezones. Building the date from
+   its parts keeps it anchored to local midnight everywhere. */
+function parseLocalDate(dateStr) {
+  const parts = String(dateStr).split("-");
+  return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+}
+
 /* ----- Format a date like 28 Jun 2026 ----- */
 function formatDate(dateStr) {
   const options = { day: "numeric", month: "short", year: "numeric" };
-  return new Date(dateStr).toLocaleDateString("en-IN", options);
+  return parseLocalDate(dateStr).toLocaleDateString("en-IN", options);
 }
 
 /* ----- How many full days until the travel date ----- */
 function daysUntil(dateStr) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const departure = new Date(dateStr);
+  const departure = parseLocalDate(dateStr);
   departure.setHours(0, 0, 0, 0);
   return Math.round((departure - today) / (1000 * 60 * 60 * 24));
 }

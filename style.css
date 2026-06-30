@@ -388,6 +388,17 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* ---------- 9. Forms ---------- */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+/* A single field left alone in a row should span the full width. */
+.form-row > .form-group:only-child { grid-column: 1 / -1; }
+
+/* Required-field marker + helper hint text. */
+.req { color: var(--coral-500); font-weight: 800; }
+.form-hint {
+  margin: -0.4rem 0 1.1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-mut);
+}
 
 .form-group { margin-bottom: 1.1rem; }
 .form-group label {

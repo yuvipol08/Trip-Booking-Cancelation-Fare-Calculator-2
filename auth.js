@@ -26,6 +26,19 @@ function setCurrentUser(email) {
   localStorage.setItem(SESSION_KEY, email);
 }
 
+/* Return the full record of the logged-in user (or null). */
+function getCurrentUserObject() {
+  const email = getCurrentUser();
+  if (!email) return null;
+  return getUsers().find(function (u) { return u.email === email; }) || null;
+}
+
+/* First letter to show inside the round profile avatar. */
+function getInitial(user) {
+  const text = (user && user.name) ? user.name : (user && user.email) || "?";
+  return text.charAt(0).toUpperCase();
+}
+
 function logout() {
   localStorage.removeItem(SESSION_KEY);
   window.location.href = "login.html";
@@ -46,11 +59,12 @@ function updateNav() {
   const authArea = document.getElementById("authArea");
   if (!authArea) return;
 
-  const user = getCurrentUser();
+  const user = getCurrentUserObject();
   if (user) {
-    const name = user.split("@")[0]; // friendly name from the email
+    // Round profile avatar (links to the profile page) + Logout button.
     authArea.innerHTML =
-      '<span class="nav-user">Hi, ' + name + '</span>' +
+      '<a href="profile.html" class="avatar" title="' +
+        (user.name || user.email) + '">' + getInitial(user) + '</a>' +
       '<a href="#" id="logoutBtn" class="nav-logout">Logout</a>';
     document.getElementById("logoutBtn").addEventListener("click", function (e) {
       e.preventDefault();

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelEase - My Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Header & Navigation ===== -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">Travel<span>Ease</span></div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="booking.html">Book Trip</a></li>
+        <li><a href="bookings.html">My Bookings</a></li>
+      </ul>
+      <div id="authArea"></div>
+    </div>
+  </header>
+
+  <!-- ===== Profile ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">My Profile</h2>
+      <p class="section-subtitle">Keep your details up to date for a smoother booking experience.</p>
+
+      <div class="card card-narrow">
+        <div class="profile-head">
+          <div class="avatar-lg" id="profileAvatar">?</div>
+          <h3 id="profileName">Your Name</h3>
+          <p id="profileEmail">you@example.com</p>
+        </div>
+
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="pName">Full Name</label>
+            <input type="text" id="pName" placeholder="e.g. Rahul Sharma" />
+          </div>
+          <div class="form-group">
+            <label for="pEmail">Email (cannot be changed)</label>
+            <input type="email" id="pEmail" disabled />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pPhone">Phone Number</label>
+              <input type="tel" id="pPhone" placeholder="10-digit mobile number" />
+            </div>
+            <div class="form-group">
+              <label for="pGender">Gender</label>
+              <select id="pGender">
+                <option value="">-- Select --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pCity">Home City</label>
+            <select id="pCity">
+              <option value="">-- Select City --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pAddress">Address</label>
+            <textarea id="pAddress" rows="3" placeholder="House no, street, area..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Save Details</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TravelEase. A student project for learning purposes.</p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

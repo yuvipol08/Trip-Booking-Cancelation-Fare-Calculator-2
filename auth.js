@@ -126,6 +126,10 @@ function initUI() {
       });
     }, { threshold: 0.12 });
     revealEls.forEach(function (el) { obs.observe(el); });
+    // Safety net: make sure nothing stays hidden if the observer misbehaves.
+    setTimeout(function () {
+      revealEls.forEach(function (el) { el.classList.add("is-in"); });
+    }, 1600);
   } else {
     revealEls.forEach(function (el) { el.classList.add("is-in"); });
   }

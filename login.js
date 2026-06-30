@@ -35,25 +35,55 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+/* ----- 10-digit mobile number check ----- */
+function isValidMobile(mobile) {
+  return /^\d{10}$/.test(mobile);
+}
+
+/* ----- Strong password check -----
+   At least 8 characters and must contain an uppercase letter, a
+   lowercase letter, a number and a special (non-alphanumeric) character. */
+function isStrongPassword(pass) {
+  return (
+    pass.length >= 8 &&
+    /[A-Z]/.test(pass) &&
+    /[a-z]/.test(pass) &&
+    /[0-9]/.test(pass) &&
+    /[^A-Za-z0-9]/.test(pass)
+  );
+}
+
 /* ----- Registration ----- */
 registerForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const name = document.getElementById("regName").value.trim();
+  const mobile = document.getElementById("regMobile").value.trim();
   const email = document.getElementById("regEmail").value.trim().toLowerCase();
   const pass = document.getElementById("regPassword").value;
   const confirm = document.getElementById("regConfirm").value;
 
+  // Name, mobile and email are all compulsory.
   if (name === "") {
     alert("Please enter your name.");
+    return;
+  }
+  if (!isValidMobile(mobile)) {
+    alert("Please enter a valid 10-digit mobile number.");
     return;
   }
   if (!isValidEmail(email)) {
     alert("Please enter a valid email address.");
     return;
   }
-  if (pass.length < 6) {
-    alert("Password must be at least 6 characters long.");
+  if (!isStrongPassword(pass)) {
+    alert(
+      "Password must be at least 8 characters long and include:\n" +
+      "• an uppercase letter (A-Z)\n" +
+      "• a lowercase letter (a-z)\n" +
+      "• a number (0-9)\n" +
+      "• a special character (e.g. ! @ # $ %)"
+    );
     return;
   }
   if (pass !== confirm) {
@@ -68,7 +98,8 @@ registerForm.addEventListener("submit", function (e) {
     return;
   }
 
-  users.push({ name: name, email: email, password: pass });
+  // Store the mobile as `phone` so the Profile page picks it up automatically.
+  users.push({ name: name, email: email, phone: mobile, password: pass });
   saveUsers(users);
 
   alert("Registration successful! Please login to continue.");

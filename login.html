@@ -66,25 +66,33 @@
           <button type="submit" class="btn btn-block btn--lg">Login</button>
         </form>
 
-        <form id="registerForm" class="hidden">
+        <form id="registerForm" class="hidden" novalidate>
           <div class="form-group">
-            <label for="regName">Full Name</label>
-            <input type="text" id="regName" placeholder="e.g. Rahul Sharma" />
+            <label for="regName">Full Name <span class="req">*</span></label>
+            <input type="text" id="regName" placeholder="e.g. Rahul Sharma" required />
           </div>
           <div class="form-group">
-            <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" placeholder="you@example.com" />
+            <label for="regMobile">Mobile Number <span class="req">*</span></label>
+            <input type="tel" id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email <span class="req">*</span></label>
+            <input type="email" id="regEmail" placeholder="you@example.com" required />
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="regPassword">Password</label>
-              <input type="password" id="regPassword" placeholder="At least 6 characters" />
+              <label for="regPassword">Password <span class="req">*</span></label>
+              <input type="password" id="regPassword" placeholder="Min 8 characters" required />
             </div>
             <div class="form-group">
-              <label for="regConfirm">Confirm Password</label>
-              <input type="password" id="regConfirm" placeholder="Re-enter password" />
+              <label for="regConfirm">Confirm Password <span class="req">*</span></label>
+              <input type="password" id="regConfirm" placeholder="Re-enter password" required />
             </div>
           </div>
+          <p class="form-hint" id="pwHint">
+            Password must be at least 8 characters and include an uppercase letter,
+            a lowercase letter, a number and a special character.
+          </p>
           <button type="submit" class="btn btn-block btn--lg">Create Account</button>
         </form>
       </div>

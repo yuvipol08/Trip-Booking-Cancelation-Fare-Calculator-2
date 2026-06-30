@@ -129,6 +129,10 @@ function validateForm(data) {
     alert("Please enter a valid number of passengers (at least 1).");
     return false;
   }
+  if (data.passengers > 10) {
+    alert("You can book for a maximum of 10 passengers at a time.");
+    return false;
+  }
   if (data.travelClass === "") {
     alert("Please select a travel class.");
     return false;
@@ -156,25 +160,14 @@ document.querySelectorAll('input[name="mode"]').forEach(function (radio) {
   });
 });
 
-// Recalculate the estimate whenever a field changes.
-["source", "destination", "travelClass", "passengers"].forEach(function (id) {
+// Recalculate the estimate whenever a dropdown changes.
+["source", "destination", "travelClass"].forEach(function (id) {
   document.getElementById(id).addEventListener("change", updateFareEstimate);
-  document.getElementById(id).addEventListener("keyup", updateFareEstimate);
 });
-
-// "Calculate Fare" button.
-document.getElementById("calcBtn").addEventListener("click", function () {
-  const data = getFormData();
-  if (!data.source || !data.destination || !data.travelClass) {
-    alert("Please select route and travel class to calculate the fare.");
-    return;
-  }
-  if (data.source === data.destination) {
-    alert("Source and destination cannot be the same city.");
-    return;
-  }
-  updateFareEstimate();
-});
+// The passenger count is typed, so also react while the user types.
+const passengersInput = document.getElementById("passengers");
+passengersInput.addEventListener("change", updateFareEstimate);
+passengersInput.addEventListener("input", updateFareEstimate);
 
 // Booking form submit.
 document.getElementById("bookingForm").addEventListener("submit", function (e) {

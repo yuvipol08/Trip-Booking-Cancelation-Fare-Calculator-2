@@ -6,6 +6,14 @@
 // This page needs a logged-in user.
 requireLogin();
 
+/* ----- Today's date as YYYY-MM-DD (for the date input) ----- */
+function todayString() {
+  const t = new Date();
+  const mm = String(t.getMonth() + 1).padStart(2, "0");
+  const dd = String(t.getDate()).padStart(2, "0");
+  return t.getFullYear() + "-" + mm + "-" + dd;
+}
+
 /* ----- Fill the city dropdowns from data.js ----- */
 function fillCityDropdowns() {
   const sourceSel = document.getElementById("source");
@@ -112,6 +120,11 @@ function validateForm(data) {
     alert("Please choose a travel date.");
     return false;
   }
+  // Block past dates as a backup to the date picker's min attribute.
+  if (data.date < todayString()) {
+    alert("Travel date cannot be in the past. Please choose today or a future date.");
+    return false;
+  }
   if (!data.passengers || data.passengers < 1) {
     alert("Please enter a valid number of passengers (at least 1).");
     return false;
@@ -131,6 +144,9 @@ function generateBookingId() {
 /* ===== Set up the page ===== */
 fillCityDropdowns();
 fillClassDropdown("flight"); // default mode is flight
+
+// Stop users from picking a past travel date.
+document.getElementById("date").min = todayString();
 
 // When the travel mode changes, refresh the class list + fare.
 document.querySelectorAll('input[name="mode"]').forEach(function (radio) {

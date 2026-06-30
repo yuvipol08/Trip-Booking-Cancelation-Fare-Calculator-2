@@ -75,5 +75,64 @@ function updateNav() {
   }
 }
 
-// Build the header state as soon as the page loads.
-document.addEventListener("DOMContentLoaded", updateNav);
+/* ===== Shared UI behaviour (theme, menu, reveals) ===== */
+
+const THEME_KEY = "te.theme";
+
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+}
+
+function initUI() {
+  updateNav();
+
+  // Light / dark theme toggle.
+  const toggle = document.getElementById("themeToggle");
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+  }
+
+  // Mobile nav menu.
+  const burger = document.getElementById("navBurger");
+  const links = document.querySelector(".nav-links");
+  if (burger && links) {
+    burger.addEventListener("click", function () {
+      const open = links.classList.toggle("is-open");
+      burger.classList.toggle("is-open", open);
+    });
+  }
+
+  // Subtle shadow on the navbar once the page is scrolled.
+  const nav = document.querySelector(".nav");
+  if (nav) {
+    window.addEventListener("scroll", function () {
+      nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    }, { passive: true });
+  }
+
+  // Reveal elements as they scroll into view.
+  const revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    const obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { obs.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add("is-in"); });
+  }
+
+  // Footer year.
+  const year = document.getElementById("year");
+  if (year) year.textContent = new Date().getFullYear();
+}
+
+document.addEventListener("DOMContentLoaded", initUI);

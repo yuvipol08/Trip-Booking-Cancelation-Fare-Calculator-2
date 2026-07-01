@@ -150,6 +150,7 @@ function validate(d) {
   if (d.date < todayString()) { err.textContent = "Travel date can't be in the past."; return false; }
   if (!d.travelClass) { err.textContent = "Please select a travel class."; return false; }
   if (d.passengers < 1) { err.textContent = "At least one traveller is required."; return false; }
+  if (d.passengers > 10) { err.textContent = "You can book for a maximum of 10 travellers at a time."; return false; }
   return true;
 }
 

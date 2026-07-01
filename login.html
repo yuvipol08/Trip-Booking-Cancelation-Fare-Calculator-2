@@ -50,10 +50,14 @@
     </form>
 
     <!-- Register -->
-    <form id="registerForm" class="auth-form hidden">
+    <form id="registerForm" class="auth-form hidden" novalidate>
       <label class="field">
         <span class="field-label">Full name<span class="req">*</span></span>
         <input type="text" id="regName" placeholder="e.g. Rahul Sharma" />
+      </label>
+      <label class="field">
+        <span class="field-label">Mobile number<span class="req">*</span></span>
+        <input type="tel" id="regMobile" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" />
       </label>
       <label class="field">
         <span class="field-label">Email<span class="req">*</span></span>
@@ -61,12 +65,13 @@
       </label>
       <label class="field">
         <span class="field-label">Password<span class="req">*</span></span>
-        <input type="password" id="regPassword" placeholder="At least 6 characters" />
+        <input type="password" id="regPassword" placeholder="Min 8 characters" />
       </label>
       <label class="field">
         <span class="field-label">Confirm password<span class="req">*</span></span>
         <input type="password" id="regConfirm" placeholder="Re-enter password" />
       </label>
+      <p class="field-hint">Password must be at least 8 characters with an uppercase letter, a lowercase letter, a number and a special character.</p>
       <button type="submit" class="btn btn-primary btn-lg btn-block">Create account →</button>
     </form>
 

@@ -79,6 +79,33 @@ const modes = {
   }
 };
 
+/* ---------------------------------------------------------
+   CARBON-SMART ADVISOR data
+   Emission factors = kg of CO2 per passenger per km, by mode.
+   (Rough real-world averages: flights pollute far more per km
+   than trains or buses.) These drive the whole green feature.
+   --------------------------------------------------------- */
+const EMISSION = {
+  flight: 0.150,
+  train: 0.035,
+  bus: 0.027
+};
+
+/* Green Score tiers, based on total kg of CO2 a traveller has
+   saved by choosing greener modes instead of flying. */
+const GREEN_TIERS = [
+  { min: 0, name: "Seedling", icon: "🌱" },
+  { min: 50, name: "Sprout", icon: "🌿" },
+  { min: 200, name: "Grove", icon: "🌳" },
+  { min: 600, name: "Forest Guardian", icon: "🌲" }
+];
+
+function greenTier(savedKg) {
+  let tier = GREEN_TIERS[0];
+  GREEN_TIERS.forEach(function (t) { if (savedKg >= t.min) tier = t; });
+  return tier;
+}
+
 /* Where all bookings are stored in localStorage. */
 const BOOKINGS_KEY = "te_bookings";
 

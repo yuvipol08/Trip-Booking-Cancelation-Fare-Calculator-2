@@ -61,77 +61,50 @@ function updateNav() {
 
   const user = getCurrentUserObject();
   if (user) {
-    // Round profile avatar (links to the profile page) + Logout button.
+    const name = user.name || user.email;
     authArea.innerHTML =
-      '<a href="profile.html" class="avatar" title="' +
-        (user.name || user.email) + '">' + getInitial(user) + '</a>' +
-      '<a href="#" id="logoutBtn" class="nav-logout">Logout</a>';
-    document.getElementById("logoutBtn").addEventListener("click", function (e) {
-      e.preventDefault();
+      '<span class="user-greeting">Hi, ' + name.split(" ")[0] + '</span>' +
+      '<a href="profile.html" class="avatar-sm" title="View profile">' + getInitial(user) + '</a>' +
+      '<button class="nav-link logout-btn" id="logoutBtn">Log out</button>';
+    document.getElementById("logoutBtn").addEventListener("click", function () {
       logout();
     });
   } else {
-    authArea.innerHTML = '<a href="login.html" class="nav-logout">Login</a>';
+    authArea.innerHTML = '<a href="login.html" class="nav-link">Log in</a>';
   }
 }
 
-/* ===== Shared UI behaviour (theme, menu, reveals) ===== */
-
-const THEME_KEY = "te.theme";
-
-function applyTheme(t) {
-  document.documentElement.setAttribute("data-theme", t);
-  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+/* Small toast message in the corner (nicer than alert for success). */
+function toast(message) {
+  let el = document.getElementById("toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    el.className = "toast";
+    document.body.appendChild(el);
+  }
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function () { el.classList.remove("show"); }, 2600);
 }
 
+/* ===== Shared UI behaviour ===== */
 function initUI() {
   updateNav();
 
-  // Light / dark theme toggle.
-  const toggle = document.getElementById("themeToggle");
-  if (toggle) {
-    toggle.addEventListener("click", function () {
-      const current = document.documentElement.getAttribute("data-theme");
-      applyTheme(current === "dark" ? "light" : "dark");
-    });
-  }
+  // Highlight the nav link for the current page.
+  const here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".main-nav .nav-link").forEach(function (a) {
+    const href = a.getAttribute("href");
+    if (href === here) a.classList.add("active");
+  });
 
-  // Mobile nav menu.
-  const burger = document.getElementById("navBurger");
-  const links = document.querySelector(".nav-links");
-  if (burger && links) {
-    burger.addEventListener("click", function () {
-      const open = links.classList.toggle("is-open");
-      burger.classList.toggle("is-open", open);
-    });
-  }
-
-  // Subtle shadow on the navbar once the page is scrolled.
-  const nav = document.querySelector(".nav");
-  if (nav) {
-    window.addEventListener("scroll", function () {
-      nav.classList.toggle("is-scrolled", window.scrollY > 8);
-    }, { passive: true });
-  }
-
-  // Reveal elements as they scroll into view.
-  const revealEls = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window) {
-    const obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-in");
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    revealEls.forEach(function (el) { obs.observe(el); });
-    // Safety net: make sure nothing stays hidden if the observer misbehaves.
-    setTimeout(function () {
-      revealEls.forEach(function (el) { el.classList.add("is-in"); });
-    }, 1600);
-  } else {
-    revealEls.forEach(function (el) { el.classList.add("is-in"); });
+  // Mobile nav dropdown toggle.
+  const toggle = document.getElementById("navToggle");
+  const nav = document.getElementById("mainNav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", function () { nav.classList.toggle("open"); });
   }
 
   // Footer year.

@@ -1,145 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b1f3a" />
-  <title>TravelEase · Book a Trip</title>
-  <script>(function(){try{var t=localStorage.getItem('te.theme')||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TravelEase — Book a Trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="aurora" aria-hidden="true">
-    <span class="aurora__blob aurora__blob--1"></span>
-    <span class="aurora__blob aurora__blob--2"></span>
-    <span class="aurora__blob aurora__blob--3"></span>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html"><span class="logo-icon">🌿</span><span class="logo-text">TravelEase</span></a>
+    <nav class="main-nav" id="mainNav">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="booking.html">Book a Trip</a>
+      <a class="nav-link" href="bookings.html">My Bookings</a>
+      <a class="nav-link" href="profile.html">Profile</a>
+    </nav>
+    <div class="header-right">
+      <div id="authArea"></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <p class="eyebrow">Core planner</p>
+    <h1>Build your trip</h1>
+    <p class="page-sub">Fill in the details below. We'll price it, and show the carbon cost of your choice with a greener option.</p>
   </div>
 
-  <header class="nav" id="nav">
-    <div class="container nav__inner">
-      <a class="logo" href="index.html" aria-label="TravelEase home">
-        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z" /></svg></span>
-        <span>Travel<span class="accent">Ease</span></span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="booking.html" class="active">Book Trip</a></li>
-        <li><a href="bookings.html">My Bookings</a></li>
-      </ul>
-      <div class="nav__actions">
-        <button class="btn--ghost" id="themeToggle" type="button" aria-label="Toggle colour theme">
-          <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-        </button>
-        <div id="authArea"></div>
-        <button class="nav__burger" id="navBurger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <form id="bookingForm">
+    <!-- Step 1: Transport mode -->
+    <div class="wizard-step">
+      <div class="wizard-step-header">
+        <div class="wizard-step-num">1</div>
+        <div>
+          <div class="wizard-step-title">Transport mode</div>
+          <div class="wizard-step-desc">Flights are fastest; trains and buses are far greener.</div>
+        </div>
+      </div>
+      <div class="mode-grid" id="modeGrid">
+        <button type="button" class="mode-btn selected" data-mode="flight"><span class="ic">✈️</span><span class="lbl">Flight</span><span class="sub">₹5.0/km · fastest</span></button>
+        <button type="button" class="mode-btn" data-mode="train"><span class="ic">🚆</span><span class="lbl">Train</span><span class="sub">₹1.2/km · greener</span></button>
+        <button type="button" class="mode-btn" data-mode="bus"><span class="ic">🚌</span><span class="lbl">Bus</span><span class="sub">₹0.9/km · greenest</span></button>
       </div>
     </div>
-  </header>
 
-  <section class="section">
-    <div class="container">
-      <header class="section__head">
-        <span class="eyebrow">Plan &amp; price</span>
-        <h2 class="section-title">Build your trip, watch the fare</h2>
-        <p class="section-subtitle">Choose your mode of travel and the fare updates as you go.</p>
-      </header>
-
-      <div class="card">
-        <form id="bookingForm">
-          <!-- Travel mode: Flight / Train / Bus -->
-          <div class="mode-selector">
-            <div class="mode-option">
-              <input type="radio" name="mode" id="modeFlight" value="flight" checked />
-              <label for="modeFlight"><span class="mode-icon">✈️</span>Flight</label>
-            </div>
-            <div class="mode-option">
-              <input type="radio" name="mode" id="modeTrain" value="train" />
-              <label for="modeTrain"><span class="mode-icon">🚆</span>Train</label>
-            </div>
-            <div class="mode-option">
-              <input type="radio" name="mode" id="modeBus" value="bus" />
-              <label for="modeBus"><span class="mode-icon">🚌</span>Bus</label>
-            </div>
+    <!-- Step 2: Trip details -->
+    <div class="wizard-step">
+      <div class="wizard-step-header">
+        <div class="wizard-step-num">2</div>
+        <div>
+          <div class="wizard-step-title">Trip details</div>
+          <div class="wizard-step-desc">Where are you headed, and with how many people?</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">From city<span class="req">*</span></span>
+          <select id="source"><option value="">-- Select source --</option></select>
+        </label>
+        <label class="field">
+          <span class="field-label">To city<span class="req">*</span></span>
+          <select id="destination"><option value="">-- Select destination --</option></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Travel date<span class="req">*</span></span>
+          <input type="date" id="date" />
+        </label>
+        <label class="field">
+          <span class="field-label">Travel class</span>
+          <select id="travelClass"><option value="">-- Select class --</option></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Travellers</span>
+          <div class="number-input-wrap">
+            <button type="button" class="num-btn" data-target="passengers" data-action="dec">−</button>
+            <input type="number" id="passengers" min="1" max="10" value="1" />
+            <button type="button" class="num-btn" data-target="passengers" data-action="inc">+</button>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="source">Source City</label>
-              <select id="source"><option value="">-- Select Source --</option></select>
-            </div>
-            <div class="form-group">
-              <label for="destination">Destination City</label>
-              <select id="destination"><option value="">-- Select Destination --</option></select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="date">Travel Date</label>
-              <input type="date" id="date" />
-            </div>
-            <div class="form-group">
-              <label for="travelClass">Travel Class</label>
-              <select id="travelClass"><option value="">-- Select Class --</option></select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="passengers">Number of Passengers</label>
-              <input type="number" id="passengers" min="1" max="10" placeholder="e.g. 2" />
-            </div>
-          </div>
-
-          <div class="fare-box">
-            <span>Estimated fare</span>
-            <strong id="fareEstimate">Rs 0</strong>
-          </div>
-
-          <div class="btn-group">
-            <button type="button" class="btn btn--outline" id="calcBtn">Calculate Fare</button>
-            <button type="submit" class="btn">Book Now</button>
-          </div>
-        </form>
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="calcBtn">Calculate plan</button>
+        <p class="field-error" id="formError"></p>
       </div>
     </div>
-  </section>
 
-  <footer class="footer">
-    <div class="container footer__grid">
-      <div class="footer__brand">
-        <a class="logo" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z" /></svg></span>
-          <span>Travel<span class="accent">Ease</span></span>
-        </a>
-        <p>Honest fares, predictable refunds and a booking flow that respects your time. Built as a front-end student project.</p>
+    <!-- Results -->
+    <div id="results" hidden>
+      <!-- Cost -->
+      <div class="wizard-step">
+        <div class="wizard-step-header">
+          <div class="wizard-step-num done" style="background:var(--green)">₹</div>
+          <div class="wizard-step-title">Fare breakdown</div>
+        </div>
+        <div class="cost-grid">
+          <div class="cost-card"><span class="cost-lbl">Distance</span><span class="cost-amt" id="distAmt">— km</span></div>
+          <div class="cost-card"><span class="cost-lbl">Per person</span><span class="cost-amt" id="perAmt">₹0</span></div>
+          <div class="cost-card total"><span class="cost-lbl">Total fare</span><span class="cost-amt" id="fareEstimate">₹0</span></div>
+        </div>
       </div>
-      <div class="footer__col">
-        <h4>Explore</h4>
-        <a href="index.html">Home</a>
-        <a href="booking.html">Book a trip</a>
-        <a href="bookings.html">My Bookings</a>
-        <a href="profile.html">Profile</a>
+
+      <!-- Carbon-Smart Advisor -->
+      <div class="wizard-step">
+        <div class="wizard-step-header">
+          <div class="wizard-step-num done" style="background:var(--green)">🌱</div>
+          <div class="wizard-step-title">Carbon-Smart Advisor</div>
+        </div>
+        <div class="carbon-panel">
+          <div class="carbon-dial">
+            <div class="carbon-leaf">🌍</div>
+            <span class="carbon-kg" id="carbonKg">0<small> kg CO₂</small></span>
+          </div>
+          <div class="carbon-body">
+            <h3 id="carbonHead">Your trip's footprint</h3>
+            <p id="carbonText">Choose a route to see its carbon impact.</p>
+            <div class="carbon-compare" id="carbonCompare"></div>
+          </div>
+        </div>
+        <div class="banner banner-info eco-nudge" id="ecoNudge" hidden>
+          <span class="banner-icon">💡</span>
+          <span id="ecoNudgeText"></span>
+        </div>
       </div>
-      <div class="footer__col">
-        <h4>Good to know</h4>
-        <a href="booking.html">Fare calculator</a>
-        <a href="bookings.html">Cancellations</a>
-        <a href="login.html">Login / Register</a>
+
+      <!-- Confirm -->
+      <div class="wizard-step" style="border-bottom:none">
+        <div class="form-actions">
+          <button type="submit" class="btn btn-green btn-lg" id="bookBtn">Confirm booking →</button>
+        </div>
       </div>
     </div>
-    <div class="container footer__bar">
-      <span>© <span id="year"></span> TravelEase. A student project.</span>
-      <span>Built with HTML · CSS · Vanilla JS</span>
-    </div>
-  </footer>
+  </form>
+</main>
 
-  <script src="auth.js"></script>
-  <script src="data.js"></script>
-  <script src="booking.js"></script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="logo-text">🌿 TravelEase</span>
+    <p>Prices &amp; CO₂ are estimates for planning. © <span id="year"></span></p>
+    <div class="footer-links"><a href="bookings.html">My Bookings</a><a href="profile.html">Profile</a></div>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="data.js"></script>
+<script src="booking.js"></script>
 </body>
 </html>

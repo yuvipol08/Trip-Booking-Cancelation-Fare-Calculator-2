@@ -1,32 +1,24 @@
 /* =========================================================
-   bookings.js - Shows the logged-in user's bookings and
-   lets them cancel a trip directly from each ticket.
+   bookings.js - Ticket list, cancellation, and the
+   Carbon-Smart "Green Score" summary.
    ========================================================= */
 
 requireLogin();
 
-/* ----- Format a date like 28 Jun 2026 ----- */
 function formatDate(dateStr) {
-  const options = { day: "numeric", month: "short", year: "numeric" };
-  return new Date(dateStr).toLocaleDateString("en-IN", options);
+  return new Date(dateStr).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
+function money(n) { return "₹" + Math.round(n).toLocaleString("en-IN"); }
 
-/* ----- How many full days until the travel date ----- */
+/* Days from today until the travel date. */
 function daysUntil(dateStr) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const departure = new Date(dateStr);
-  departure.setHours(0, 0, 0, 0);
-  return Math.round((departure - today) / (1000 * 60 * 60 * 24));
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const dep = new Date(dateStr); dep.setHours(0, 0, 0, 0);
+  return Math.round((dep - today) / 86400000);
 }
 
-/* ----- Refund percentage based on how early the trip is
-   cancelled before the departure date:
-     7+ days  -> 90%
-     3-6 days -> 60%
-     1-2 days -> 30%
-     under 24 hours / same day / past -> 0% ----- */
-function getRefundPercent(dateStr) {
+/* Refund %: 7+ days 90, 3-6 days 60, 1-2 days 30, else 0. */
+function refundPercent(dateStr) {
   const days = daysUntil(dateStr);
   if (days >= 7) return 90;
   if (days >= 3) return 60;
@@ -34,92 +26,111 @@ function getRefundPercent(dateStr) {
   return 0;
 }
 
-/* ----- Build the list of bookings on screen ----- */
+function myBookings() {
+  const user = getCurrentUser();
+  return getBookings().filter(function (b) { return b.user === user; });
+}
+
+/* ----- Green Score: total CO2 saved vs flying, across live trips ----- */
+function renderGreenScore() {
+  const el = document.getElementById("greenScore");
+  const active = myBookings().filter(function (b) { return b.status !== "Cancelled"; });
+  const saved = active.reduce(function (sum, b) { return sum + (b.savedVsFlight || 0); }, 0);
+
+  if (active.length === 0) { el.hidden = true; return; }
+  el.hidden = false;
+
+  const tier = greenTier(saved);
+  const idx = GREEN_TIERS.indexOf(tier);
+  const next = GREEN_TIERS[idx + 1];
+  let sub, pct;
+  if (next) {
+    sub = saved.toLocaleString("en-IN") + " kg CO₂ saved vs flying · " +
+      (next.min - saved) + " kg to " + next.name;
+    pct = Math.round(((saved - tier.min) / (next.min - tier.min)) * 100);
+  } else {
+    sub = saved.toLocaleString("en-IN") + " kg CO₂ saved vs flying · top tier reached!";
+    pct = 100;
+  }
+
+  el.innerHTML =
+    '<div class="gs-label">Your Green Score</div>' +
+    '<div class="gs-tier">' + tier.icon + " " + tier.name + "</div>" +
+    '<div class="gs-saved">' + sub + "</div>" +
+    '<div class="gs-bar"><div class="gs-fill" style="width:' + Math.max(4, Math.min(100, pct)) + '%"></div></div>';
+}
+
+/* ----- Booking tickets ----- */
 function renderBookings() {
   const listEl = document.getElementById("bookingList");
   const emptyNote = document.getElementById("emptyNote");
-  const user = getCurrentUser();
+  const list = myBookings().reverse();
 
-  // Only show the current user's bookings, newest first.
-  const myBookings = getBookings()
-    .filter(function (b) { return b.user === user; })
-    .reverse();
-
-  if (myBookings.length === 0) {
+  if (list.length === 0) {
     emptyNote.classList.remove("hidden");
     listEl.innerHTML = "";
     return;
   }
-
   emptyNote.classList.add("hidden");
 
-  listEl.innerHTML = myBookings.map(function (b) {
-    const isCancelled = b.status === "Cancelled";
+  listEl.innerHTML = list.map(function (b) {
+    const cancelled = b.status === "Cancelled";
     const modeLabel = modes[b.mode] ? modes[b.mode].label : b.mode;
+    const co2 = (b.co2 != null) ? b.co2 + " kg" : "—";
 
-    // Footer area: either a cancel button or a refund note.
     let footer;
-    if (isCancelled) {
+    if (cancelled) {
       footer =
-        '<span class="refund-note">Cancelled · Refund: Rs ' +
-        (b.refund || 0).toLocaleString("en-IN") + "</span>";
+        '<span class="eco-row">↩︎ Refunded ' + money(b.refund || 0) + '</span>' +
+        '<span class="pill pill-cancelled">Cancelled</span>';
     } else {
-      const percent = getRefundPercent(b.date);
-      footer =
-        '<span class="refund-note">Cancel now &rarr; ' + percent +
-        '% refund</span>' +
-        '<button class="btn btn-danger btn-sm cancel-btn" data-id="' + b.id +
-        '">Cancel Booking</button>';
+      const pct = refundPercent(b.date);
+      const eco = (b.savedVsFlight)
+        ? '<span class="eco-row">🌿 Saved ' + b.savedVsFlight + ' kg CO₂ vs flying</span>'
+        : '<span class="eco-row">✈️ Lowest-carbon isn\'t flying — try train next time</span>';
+      footer = eco +
+        '<button class="btn btn-danger btn-sm cancel-btn" data-id="' + b.id + '">Cancel · ' + pct + '% back</button>';
     }
 
     return (
-      '<div class="booking-item' + (isCancelled ? " cancelled" : "") + '">' +
-        '<div class="booking-head">' +
-          "<h3>" + b.source + " &rarr; " + b.destination + "</h3>" +
-          '<span class="badge' + (isCancelled ? " cancelled" : "") + '">' +
-            b.status + "</span>" +
+      '<div class="ticket' + (cancelled ? " cancelled" : "") + '">' +
+        '<div class="ticket-header">' +
+          '<div><div class="ticket-route">' + b.source + " → " + b.destination + "</div>" +
+          '<div class="ticket-id">' + b.id + "</div></div>" +
+          '<span class="pill ' + (cancelled ? "pill-cancelled" : "pill-active") + '">' + b.status + "</span>" +
         "</div>" +
-        '<div class="booking-grid">' +
-          "<div><span>Booking ID</span>" + b.id + "</div>" +
-          "<div><span>Mode</span>" + modeLabel + "</div>" +
-          "<div><span>Class</span>" + b.travelClass + "</div>" +
-          "<div><span>Travel Date</span>" + formatDate(b.date) + "</div>" +
-          "<div><span>Passengers</span>" + b.passengers + "</div>" +
-          "<div><span>Total Fare</span>Rs " + b.fare.toLocaleString("en-IN") + "</div>" +
+        '<div class="ticket-grid">' +
+          '<div><span class="k">Mode</span><span class="v">' + modeLabel + "</span></div>" +
+          '<div><span class="k">Class</span><span class="v">' + b.travelClass + "</span></div>" +
+          '<div><span class="k">Date</span><span class="v">' + formatDate(b.date) + "</span></div>" +
+          '<div><span class="k">Travellers</span><span class="v">' + b.passengers + "</span></div>" +
+          '<div><span class="k">Distance</span><span class="v mono">' + (b.distance != null ? b.distance + " km" : "—") + "</span></div>" +
+          '<div><span class="k">CO₂</span><span class="v mono">' + co2 + "</span></div>" +
+          '<div><span class="k">Total fare</span><span class="v mono">' + money(b.fare) + "</span></div>" +
         "</div>" +
-        '<div class="booking-footer">' + footer + "</div>" +
+        '<div class="ticket-footer">' + footer + "</div>" +
       "</div>"
     );
   }).join("");
 
-  attachCancelHandlers();
-}
-
-/* ----- Wire up the Cancel button on each ticket ----- */
-function attachCancelHandlers() {
   document.querySelectorAll(".cancel-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      cancelBooking(this.getAttribute("data-id"));
-    });
+    btn.addEventListener("click", function () { cancelBooking(this.getAttribute("data-id")); });
   });
 }
 
-/* ----- Cancel a single booking by its ID ----- */
+/* ----- Cancel a booking ----- */
 function cancelBooking(id) {
   const all = getBookings();
   const booking = all.find(function (b) { return b.id === id; });
-  if (!booking) return;
+  if (!booking || booking.status === "Cancelled") return;
 
-  const percent = getRefundPercent(booking.date);
-  const refund = Math.round(booking.fare * percent / 100);
+  const pct = refundPercent(booking.date);
+  const refund = Math.round(booking.fare * pct / 100);
 
-  // Ask the user to confirm before cancelling.
   const ok = confirm(
     "Cancel booking " + booking.id + "?\n\n" +
-    "Refund: " + percent + "% of Rs " +
-    booking.fare.toLocaleString("en-IN") +
-    " = Rs " + refund.toLocaleString("en-IN") +
-    (percent === 0 ? "\n(No refund within 24 hours of departure.)" : "")
+    "Refund: " + pct + "% of " + money(booking.fare) + " = " + money(refund) +
+    (pct === 0 ? "\n(No refund within 24 hours of departure.)" : "")
   );
   if (!ok) return;
 
@@ -127,15 +138,10 @@ function cancelBooking(id) {
   booking.refund = refund;
   saveBookings(all);
 
-  alert(
-    "Booking " + booking.id + " cancelled.\n" +
-    (refund > 0
-      ? "A refund of Rs " + refund.toLocaleString("en-IN") +
-        " will be credited within 5-7 working days."
-      : "No refund is applicable for this cancellation.")
-  );
-
+  toast(refund > 0 ? "Cancelled · " + money(refund) + " refunded" : "Cancelled · no refund applies");
+  renderGreenScore();
   renderBookings();
 }
 
+renderGreenScore();
 renderBookings();

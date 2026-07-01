@@ -29,8 +29,34 @@ function loadProfile() {
   document.getElementById("pAddress").value = user.address || "";
 }
 
+/* ----- Green Score panel (total CO2 saved vs flying) ----- */
+function renderGreen() {
+  const el = document.getElementById("profileGreen");
+  const active = getBookings().filter(function (b) {
+    return b.user === user.email && b.status !== "Cancelled";
+  });
+  const saved = active.reduce(function (s, b) { return s + (b.savedVsFlight || 0); }, 0);
+  if (active.length === 0) { el.hidden = true; return; }
+
+  el.hidden = false;
+  const tier = greenTier(saved);
+  const idx = GREEN_TIERS.indexOf(tier);
+  const next = GREEN_TIERS[idx + 1];
+  const pct = next ? Math.round(((saved - tier.min) / (next.min - tier.min)) * 100) : 100;
+  const sub = next
+    ? saved.toLocaleString("en-IN") + " kg CO₂ saved · " + (next.min - saved) + " kg to " + next.name
+    : saved.toLocaleString("en-IN") + " kg CO₂ saved · top tier!";
+
+  el.innerHTML =
+    '<div class="gs-label">Your Green Score</div>' +
+    '<div class="gs-tier">' + tier.icon + " " + tier.name + "</div>" +
+    '<div class="gs-saved">' + sub + "</div>" +
+    '<div class="gs-bar"><div class="gs-fill" style="width:' + Math.max(4, Math.min(100, pct)) + '%"></div></div>';
+}
+
 fillCityDropdown();
 loadProfile();
+renderGreen();
 
 /* ----- Save the form back into the user's record ----- */
 document.getElementById("profileForm").addEventListener("submit", function (e) {
@@ -66,5 +92,5 @@ document.getElementById("profileForm").addEventListener("submit", function (e) {
   document.getElementById("profileName").textContent = name;
   updateNav();
 
-  alert("Your profile details have been saved successfully!");
+  toast("Profile saved ✓");
 });

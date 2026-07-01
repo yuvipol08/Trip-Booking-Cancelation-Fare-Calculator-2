@@ -1,10 +1,10 @@
 /* =========================================================
-   booking.js - Trip booking form, fare calculation and
-   saving the booking. Works for Flight, Train and Bus.
+   booking.js - Trip booking + fare + Carbon-Smart Advisor.
    ========================================================= */
 
-// This page needs a logged-in user.
 requireLogin();
+
+let currentMode = "flight"; // selected transport mode
 
 /* ----- Today's date as YYYY-MM-DD (for the date input) ----- */
 function todayString() {
@@ -14,11 +14,10 @@ function todayString() {
   return t.getFullYear() + "-" + mm + "-" + dd;
 }
 
-/* ----- Fill the city dropdowns from data.js ----- */
+/* ----- Fill the city dropdowns ----- */
 function fillCityDropdowns() {
   const sourceSel = document.getElementById("source");
   const destSel = document.getElementById("destination");
-
   Object.keys(cities).sort().forEach(function (city) {
     sourceSel.innerHTML += '<option value="' + city + '">' + city + "</option>";
     destSel.innerHTML += '<option value="' + city + '">' + city + "</option>";
@@ -28,190 +27,199 @@ function fillCityDropdowns() {
 /* ----- Fill the class dropdown for the chosen mode ----- */
 function fillClassDropdown(mode) {
   const classSel = document.getElementById("travelClass");
-  classSel.innerHTML = '<option value="">-- Select Class --</option>';
-
-  const classes = modes[mode].classes;
-  Object.keys(classes).forEach(function (cls) {
+  classSel.innerHTML = '<option value="">-- Select class --</option>';
+  Object.keys(modes[mode].classes).forEach(function (cls) {
     classSel.innerHTML += '<option value="' + cls + '">' + cls + "</option>";
   });
 }
 
-/* ----- Distance between two cities using the Haversine
-   formula (great-circle distance from lat/long). ----- */
+/* ----- Great-circle distance (Haversine) between two cities ----- */
 function getDistance(source, destination) {
-  const [lat1, lon1] = cities[source];
-  const [lat2, lon2] = cities[destination];
-
-  const toRad = function (deg) { return (deg * Math.PI) / 180; };
-  const R = 6371; // Earth radius in km
-
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return Math.round(R * c);
+  const a = cities[source], b = cities[destination];
+  const toRad = function (d) { return (d * Math.PI) / 180; };
+  const R = 6371;
+  const dLat = toRad(b[0] - a[0]);
+  const dLon = toRad(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLon / 2) ** 2;
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h)));
 }
 
-/* ----- Calculate the total fare ----- */
-function calculateFare(mode, source, destination, travelClass, passengers) {
-  const distance = getDistance(source, destination);
+/* ----- Fare for a given mode ----- */
+function fareFor(mode, distance, travelClass, passengers) {
   const setup = modes[mode];
-  const multiplier = setup.classes[travelClass] || 1;
-
-  // (distance * per-km rate * class multiplier + base fee) * passengers
-  const fare = (distance * setup.rate * multiplier + setup.base) * passengers;
-  return Math.round(fare);
+  const mult = setup.classes[travelClass] || 1;
+  return Math.round((distance * setup.rate * mult + setup.base) * passengers);
 }
 
-/* ----- Read the current form values ----- */
+/* ----- CO2 (kg) for a given mode ----- */
+function co2For(mode, distance, passengers) {
+  return Math.round(distance * passengers * EMISSION[mode]);
+}
+
+/* ----- Read the form ----- */
 function getFormData() {
-  const modeInput = document.querySelector('input[name="mode"]:checked');
   return {
-    mode: modeInput ? modeInput.value : "",
+    mode: currentMode,
     source: document.getElementById("source").value,
     destination: document.getElementById("destination").value,
     date: document.getElementById("date").value,
-    passengers: parseInt(document.getElementById("passengers").value, 10),
+    passengers: parseInt(document.getElementById("passengers").value, 10) || 0,
     travelClass: document.getElementById("travelClass").value
   };
 }
 
-/* ----- Update the live fare estimate box ----- */
-function updateFareEstimate() {
-  const data = getFormData();
-  const fareEl = document.getElementById("fareEstimate");
+/* ----- Money formatting ----- */
+function money(n) { return "₹" + Math.round(n).toLocaleString("en-IN"); }
 
-  if (
-    data.mode &&
-    data.source &&
-    data.destination &&
-    data.source !== data.destination &&
-    data.travelClass &&
-    data.passengers >= 1
-  ) {
-    const fare = calculateFare(
-      data.mode, data.source, data.destination, data.travelClass, data.passengers
-    );
-    fareEl.textContent = "Rs " + fare.toLocaleString("en-IN");
+/* ----- Show / refresh the results (fare + carbon) ----- */
+function refresh() {
+  const d = getFormData();
+  const results = document.getElementById("results");
+
+  const ready = d.source && d.destination && d.source !== d.destination &&
+    d.travelClass && d.passengers >= 1;
+  if (!ready) { results.hidden = true; return; }
+
+  const distance = getDistance(d.source, d.destination);
+  const fare = fareFor(d.mode, distance, d.travelClass, d.passengers);
+  const co2 = co2For(d.mode, distance, d.passengers);
+
+  results.hidden = false;
+
+  // Fare cards
+  document.getElementById("distAmt").textContent = distance.toLocaleString("en-IN") + " km";
+  document.getElementById("perAmt").textContent = money(fare / d.passengers);
+  document.getElementById("fareEstimate").textContent = money(fare);
+
+  // Carbon dial
+  document.getElementById("carbonKg").innerHTML =
+    co2.toLocaleString("en-IN") + "<small> kg CO₂</small>";
+
+  // Compare all three modes for this route
+  const compare = document.getElementById("carbonCompare");
+  const icons = { flight: "✈️", train: "🚆", bus: "🚌" };
+  const allCo2 = {};
+  ["flight", "train", "bus"].forEach(function (m) { allCo2[m] = co2For(m, distance, d.passengers); });
+  const greenest = Object.keys(allCo2).sort(function (a, b) { return allCo2[a] - allCo2[b]; })[0];
+
+  compare.innerHTML = ["flight", "train", "bus"].map(function (m) {
+    const best = m === greenest ? " best" : "";
+    return '<span class="carbon-chip' + best + '">' + icons[m] + " " +
+      modes[m].label + " · " + allCo2[m] + " kg</span>";
+  }).join("");
+
+  // Headline + greener nudge
+  const head = document.getElementById("carbonHead");
+  const text = document.getElementById("carbonText");
+  const nudge = document.getElementById("ecoNudge");
+  const nudgeText = document.getElementById("ecoNudgeText");
+  const savedVsFlight = co2For("flight", distance, d.passengers) - co2;
+
+  if (d.mode === greenest) {
+    head.textContent = "Greenest choice — nice one! 🌿";
+    text.textContent = "This is the lowest-carbon way to make this trip.";
+    nudge.className = "banner banner-ok eco-nudge";
+    nudge.hidden = false;
+    nudgeText.innerHTML = savedVsFlight > 0
+      ? "You're saving <b>" + savedVsFlight + " kg CO₂</b> versus flying this route."
+      : "A clean, low-carbon trip.";
   } else {
-    fareEl.textContent = "Rs 0";
+    head.textContent = "There's a greener way to go";
+    text.textContent = "Your " + modes[d.mode].label.toLowerCase() +
+      " emits " + co2 + " kg CO₂ for this trip.";
+    const altFare = fareFor(greenest, distance, d.travelClass in modes[greenest].classes
+      ? d.travelClass : Object.keys(modes[greenest].classes)[0], d.passengers);
+    const co2Saved = co2 - allCo2[greenest];
+    const fareDiff = fare - altFare;
+    nudge.className = "banner banner-info eco-nudge";
+    nudge.hidden = false;
+    nudgeText.innerHTML = "Switch to <b>" + modes[greenest].label + "</b> and cut <b>" +
+      co2Saved + " kg CO₂</b>" +
+      (fareDiff > 0 ? " while saving <b>" + money(fareDiff) + "</b>." : ".");
   }
 }
 
 /* ----- Validation ----- */
-function validateForm(data) {
-  if (!data.mode) {
-    alert("Please choose a travel mode (Flight, Train or Bus).");
-    return false;
-  }
-  if (data.source === "" || data.destination === "") {
-    alert("Please select both source and destination cities.");
-    return false;
-  }
-  if (data.source === data.destination) {
-    alert("Source and destination cannot be the same city.");
-    return false;
-  }
-  if (data.date === "") {
-    alert("Please choose a travel date.");
-    return false;
-  }
-  // Block past dates as a backup to the date picker's min attribute.
-  if (data.date < todayString()) {
-    alert("Travel date cannot be in the past. Please choose today or a future date.");
-    return false;
-  }
-  if (!data.passengers || data.passengers < 1) {
-    alert("Please enter a valid number of passengers (at least 1).");
-    return false;
-  }
-  if (data.travelClass === "") {
-    alert("Please select a travel class.");
-    return false;
-  }
+function validate(d) {
+  const err = document.getElementById("formError");
+  err.textContent = "";
+  if (!d.source || !d.destination) { err.textContent = "Please pick both source and destination."; return false; }
+  if (d.source === d.destination) { err.textContent = "Source and destination can't be the same."; return false; }
+  if (!d.date) { err.textContent = "Please choose a travel date."; return false; }
+  if (d.date < todayString()) { err.textContent = "Travel date can't be in the past."; return false; }
+  if (!d.travelClass) { err.textContent = "Please select a travel class."; return false; }
+  if (d.passengers < 1) { err.textContent = "At least one traveller is required."; return false; }
   return true;
 }
 
-/* ----- Make a random booking ID ----- */
-function generateBookingId() {
-  return "TE" + Math.floor(10000 + Math.random() * 90000);
-}
+function generateBookingId() { return "TE" + Math.floor(10000 + Math.random() * 90000); }
 
-/* ===== Set up the page ===== */
+/* ===== Setup ===== */
 fillCityDropdowns();
-fillClassDropdown("flight"); // default mode is flight
-
-// Stop users from picking a past travel date.
+fillClassDropdown("flight");
 document.getElementById("date").min = todayString();
 
-// When the travel mode changes, refresh the class list + fare.
-document.querySelectorAll('input[name="mode"]').forEach(function (radio) {
-  radio.addEventListener("change", function () {
-    fillClassDropdown(this.value);
-    updateFareEstimate();
+// Mode buttons
+document.querySelectorAll("#modeGrid .mode-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    document.querySelectorAll("#modeGrid .mode-btn").forEach(function (b) { b.classList.remove("selected"); });
+    btn.classList.add("selected");
+    currentMode = btn.getAttribute("data-mode");
+    fillClassDropdown(currentMode);
+    refresh();
   });
 });
 
-// Recalculate the estimate whenever a field changes.
-["source", "destination", "travelClass", "passengers"].forEach(function (id) {
-  document.getElementById(id).addEventListener("change", updateFareEstimate);
-  document.getElementById(id).addEventListener("keyup", updateFareEstimate);
+// Number stepper
+document.querySelectorAll(".num-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    const input = document.getElementById(btn.getAttribute("data-target"));
+    let val = parseInt(input.value, 10) || 1;
+    val += btn.getAttribute("data-action") === "inc" ? 1 : -1;
+    val = Math.min(10, Math.max(1, val));
+    input.value = val;
+    refresh();
+  });
 });
 
-// "Calculate Fare" button.
-document.getElementById("calcBtn").addEventListener("click", function () {
-  const data = getFormData();
-  if (!data.source || !data.destination || !data.travelClass) {
-    alert("Please select route and travel class to calculate the fare.");
-    return;
-  }
-  if (data.source === data.destination) {
-    alert("Source and destination cannot be the same city.");
-    return;
-  }
-  updateFareEstimate();
+// Recalculate on any change
+["source", "destination", "travelClass", "passengers", "date"].forEach(function (id) {
+  document.getElementById(id).addEventListener("change", refresh);
 });
+document.getElementById("calcBtn").addEventListener("click", refresh);
 
-// Booking form submit.
+// Confirm booking
 document.getElementById("bookingForm").addEventListener("submit", function (e) {
   e.preventDefault();
+  const d = getFormData();
+  if (!validate(d)) return;
 
-  const data = getFormData();
-  if (!validateForm(data)) return;
-
-  const fare = calculateFare(
-    data.mode, data.source, data.destination, data.travelClass, data.passengers
-  );
+  const distance = getDistance(d.source, d.destination);
+  const fare = fareFor(d.mode, distance, d.travelClass, d.passengers);
+  const co2 = co2For(d.mode, distance, d.passengers);
+  const savedVsFlight = co2For("flight", distance, d.passengers) - co2;
 
   const booking = {
     id: generateBookingId(),
     user: getCurrentUser(),
-    mode: data.mode,
-    source: data.source,
-    destination: data.destination,
-    date: data.date,
-    passengers: data.passengers,
-    travelClass: data.travelClass,
+    mode: d.mode,
+    source: d.source,
+    destination: d.destination,
+    date: d.date,
+    passengers: d.passengers,
+    travelClass: d.travelClass,
     fare: fare,
+    distance: distance,
+    co2: co2,
+    savedVsFlight: savedVsFlight,
     status: "Confirmed"
   };
 
-  // Save the booking to localStorage.
   const all = getBookings();
   all.push(booking);
   saveBookings(all);
 
-  alert(
-    "Booking confirmed! 🎉\n\n" +
-    modes[data.mode].label + " from " + data.source + " to " + data.destination +
-    "\nBooking ID: " + booking.id +
-    "\nTotal Fare: Rs " + fare.toLocaleString("en-IN") +
-    "\n\nYou can view it under 'My Bookings'."
-  );
-
-  window.location.href = "bookings.html";
+  toast("Booking " + booking.id + " confirmed 🎉");
+  setTimeout(function () { window.location.href = "bookings.html"; }, 900);
 });

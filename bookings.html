@@ -1,92 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b1f3a" />
-  <title>TravelEase · My Bookings</title>
-  <script>(function(){try{var t=localStorage.getItem('te.theme')||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TravelEase — My Bookings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="aurora" aria-hidden="true">
-    <span class="aurora__blob aurora__blob--1"></span>
-    <span class="aurora__blob aurora__blob--2"></span>
-    <span class="aurora__blob aurora__blob--3"></span>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html"><span class="logo-icon">🌿</span><span class="logo-text">TravelEase</span></a>
+    <nav class="main-nav" id="mainNav">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="booking.html">Book a Trip</a>
+      <a class="nav-link" href="bookings.html">My Bookings</a>
+      <a class="nav-link" href="profile.html">Profile</a>
+    </nav>
+    <div class="header-right">
+      <div id="authArea"></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <p class="eyebrow">Manage</p>
+    <h1>My Bookings</h1>
+    <p class="page-sub">Every trip you've booked, its carbon footprint, and quick cancellation with instant refund estimates.</p>
   </div>
 
-  <header class="nav" id="nav">
-    <div class="container nav__inner">
-      <a class="logo" href="index.html" aria-label="TravelEase home">
-        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z" /></svg></span>
-        <span>Travel<span class="accent">Ease</span></span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="booking.html">Book Trip</a></li>
-        <li><a href="bookings.html" class="active">My Bookings</a></li>
-      </ul>
-      <div class="nav__actions">
-        <button class="btn--ghost" id="themeToggle" type="button" aria-label="Toggle colour theme">
-          <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-        </button>
-        <div id="authArea"></div>
-        <button class="nav__burger" id="navBurger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
-      </div>
-    </div>
-  </header>
+  <!-- Green Score summary -->
+  <div class="green-score" id="greenScore" hidden style="margin-bottom:24px"></div>
 
-  <section class="section">
-    <div class="container">
-      <header class="section__head">
-        <span class="eyebrow">Manage</span>
-        <h2 class="section-title">My Bookings</h2>
-        <p class="section-subtitle">View all your trips and cancel any of them right from the ticket.</p>
-      </header>
+  <div class="empty-state hidden" id="emptyNote">
+    <span class="empty-icon">🎒</span>
+    <strong>No bookings yet</strong>
+    Head to "Book a Trip" to plan your first journey.
+  </div>
 
-      <p class="empty-note hidden" id="emptyNote">
-        You have no bookings yet. Head over to "Book Trip" to plan your first journey!
-      </p>
+  <div id="bookingList"></div>
+</main>
 
-      <div id="bookingList"></div>
-    </div>
-  </section>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="logo-text">🌿 TravelEase</span>
+    <p>© <span id="year"></span> TravelEase. A student project.</p>
+    <div class="footer-links"><a href="booking.html">Book a Trip</a><a href="profile.html">Profile</a></div>
+  </div>
+</footer>
 
-  <footer class="footer">
-    <div class="container footer__grid">
-      <div class="footer__brand">
-        <a class="logo" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z" /></svg></span>
-          <span>Travel<span class="accent">Ease</span></span>
-        </a>
-        <p>Honest fares, predictable refunds and a booking flow that respects your time. Built as a front-end student project.</p>
-      </div>
-      <div class="footer__col">
-        <h4>Explore</h4>
-        <a href="index.html">Home</a>
-        <a href="booking.html">Book a trip</a>
-        <a href="bookings.html">My Bookings</a>
-        <a href="profile.html">Profile</a>
-      </div>
-      <div class="footer__col">
-        <h4>Good to know</h4>
-        <a href="booking.html">Fare calculator</a>
-        <a href="bookings.html">Cancellations</a>
-        <a href="login.html">Login / Register</a>
-      </div>
-    </div>
-    <div class="container footer__bar">
-      <span>© <span id="year"></span> TravelEase. A student project.</span>
-      <span>Built with HTML · CSS · Vanilla JS</span>
-    </div>
-  </footer>
-
-  <script src="auth.js"></script>
-  <script src="data.js"></script>
-  <script src="bookings.js"></script>
+<script src="auth.js"></script>
+<script src="data.js"></script>
+<script src="bookings.js"></script>
 </body>
 </html>
